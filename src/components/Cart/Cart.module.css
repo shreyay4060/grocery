@@ -5,7 +5,7 @@
   padding: 24px;
   width: 100%;
   max-width: 400px;
-  margin: 20px auto;
+  margin: -60px auto;
   transition: box-shadow 0.3s;
 }
 
@@ -36,7 +36,8 @@
   transition: color 0.2s;
 }
 .deleteBtn:hover {
-  color: #f17e36;
+  color: #7a7a7a;
+  background-color: transparent;
 }
 .loader {
   display: flex;
@@ -180,4 +181,16 @@
 }
 .saveBtn:hover {
   background: #1a6b1a;
+}
+
+.addBasketbtn {
+  background: #f17e36;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-size: 16px;
+  margin-top: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
 }

@@ -3,7 +3,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: transparent;
+  /* background: transparent; */
+  background-color: linear-gradient(120deg, #4fbc89 0%, #84ef7e 100%);
 }
 .navbar {
   width: 100%;

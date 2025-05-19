@@ -32,7 +32,7 @@ export default function Cart() {
   const [success, setSuccess] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  
+
   useEffect(() => {
     if (!currentUser) { navigate("/login"); return; }
     (async () => {
@@ -133,8 +133,14 @@ export default function Cart() {
             <button className={styles.deleteBtn} onClick={() => removeBasket(b.id)}>🗑️</button>
           </div>
         ))}
-        <Btn name="+ Add Basket" onClick={addNewBasket} />
+        <br />
+        <br />
+        <button  onClick={addNewBasket} className={styles.addBasketbtn}>
+            <span className={styles.addBasketIcon}>➕ Add Basket</span>
+            
+            </button>
       </div>
+
 
       
       <div className={styles.card}>
@@ -146,9 +152,9 @@ export default function Cart() {
             {activeBasket.items.map((it, i) => (
               <li key={i} className={styles.itemRow}>
                 <span>{it.name} — ₹{it.price} × {it.quantity}</span>
-                <div>
-                  <button onClick={() => updateQuantity(i, -1)}>-</button>
-                  <button onClick={() => updateQuantity(i, 1)}>+</button>
+                <div><br />
+                  <button style={{margin:"5px 10px 10px 10px",backgroundColor:"gray"}} onClick={() => updateQuantity(i, -1)}>-</button>
+                  <button style={{margin:"5px 10px 10px 10px",backgroundColor:"gray"}} onClick={() => updateQuantity(i, 1)}>+</button>
                 </div>
               </li>
             ))}
