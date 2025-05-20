@@ -1,17 +1,3 @@
-# Grocery Cart App
-
-![Screenshot of Grocery Cart App](./screenshot.png)
-
-> Example UI: Basket, type filter cards, and product listing
-
----
-**How to use this project:**
-- Filter products by type using the type cards.
-- Add items to your basket.
-- Responsive and mobile-friendly UI.
-
----
-
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
