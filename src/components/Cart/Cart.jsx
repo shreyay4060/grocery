@@ -326,10 +326,10 @@ export default function Cart() {
             {activeBasket.items.map((it, i) => (
               <li key={i} className={styles.itemRow}>
                 <span>{it.name} — ₹{it.price} × {it.quantity}</span>
-                <div><br />
+                {/* <div><br />
                   <button style={{ margin: "5px 0px 0px 0px", backgroundColor: "gray" }} onClick={() => updateQuantity(i, -1)}>-</button>
                   <button style={{ margin: "5px 10px 5px 10px", backgroundColor: "gray" }} onClick={() => updateQuantity(i, 1)}>+</button>
-                </div>
+                </div> */}
                 
               </li>
             ))}
