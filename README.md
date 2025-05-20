@@ -13,7 +13,7 @@ Technologies Used
 - Backend: Firebase
 - Storage: Local Storage
 - Installation
-1. Clone the repository: git clone https://github.com/your-username/grocery-shopping-app.git
+1. Clone the repository: git clone https://shreyay4060.github.io/grocery/
 2. Install dependencies: npm install and bun install 
 3. Start the application: bun run dev
 
