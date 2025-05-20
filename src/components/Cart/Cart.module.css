@@ -1,11 +1,11 @@
 .card {
-  background: linear-gradient(135deg, #fff 60%, #f17e36 100%);
+  background: linear-gradient(135deg, #ffffff 60%, #62f776 100%);
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.9);
   padding: 24px;
-  width: 100%;
-  max-width: 400px;
-  margin: -60px auto;
+  width: 70%;
+  max-width: 300px;
+  margin: 0px auto;
   transition: box-shadow 0.3s;
 }
 
@@ -72,8 +72,8 @@
   z-index: 1100;
 }
 .profilePic {
-  width: 48px;
-  height: 48px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -113,7 +113,7 @@
   border: 2px solid #228B22;
 }
 .profileModalBackdrop {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.25);
   z-index: 2000;
@@ -183,6 +183,63 @@
   background: #1a6b1a;
 }
 
+.responsiveContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 32px 16px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .responsiveContainer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px 4px;
+  }
+  .card {
+    margin: 12px auto;
+    width: 98vw;
+    max-width: 98vw;
+    min-width: 0;
+    padding: 12px;
+  }
+  .basketList {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 12px;
+  }
+}
+
+.basketList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 220px;
+  max-width: 260px;
+  width: 100%;
+}
+
+.basketTab {
+  background: #fff;
+  border-radius: 8px;
+  padding: 0px 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.2s;
+  margin-bottom: 4px;
+}
+.basketTab:hover, .activeTab {
+  background: #87ef9b;
+  color: #0c0c0c;
+}
 .addBasketbtn {
   background: #f17e36;
   color: #fff;
@@ -193,4 +250,53 @@
   margin-top: 18px;
   cursor: pointer;
   transition: background 0.2s;
+  width: 100%;
+}
+.addBasketbtn:hover {
+  background: #7adb81;
+  color: black;
+}
+.addBasketIcon {
+  font-size: 1.2em;
+}
+.itemList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  flex-wrap: wrap;
+}
+@media (max-width: 600px) {
+  .itemRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+.actions {
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.logoutBtn {
+  margin-top: 24px;
+  width: 100%;
+  background: #f17e36;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+.logoutBtn:hover {
+  background: #e05e00;
 }

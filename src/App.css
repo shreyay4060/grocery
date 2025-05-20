@@ -9,7 +9,7 @@ body, .App {
 
 .fancy-bg {
   min-height: 100vh;
-  background: linear-gradient(120deg, #f8fafc 0%, #f17e36 100%);
+  background: linear-gradient(120deg, #f8fafc 0%, #99f4b1 100%);
 }
 
 .modal-backdrop {

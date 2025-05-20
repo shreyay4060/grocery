@@ -27,6 +27,14 @@ export default function Signup() {
         email: values.email,
         createdAt: new Date()
       });
+      localStorage.setItem("user", JSON.stringify({
+        uid: cred.user.uid,
+        email: values.email
+      }));
+      console.log(localStorage.setItem("user", JSON.stringify({
+        uid: cred.user.uid,
+        email: values.email
+      })))
       navigate("/");
     } catch (err) {
       setError(err.message);

@@ -5,10 +5,13 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const carouselImages = [
+  "https://th.bing.com/th/id/OIP.tX2d_nhdBNijw-biOB9vCwHaE8?rs=1&pid=ImgDetMain",
   "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1574226516831-e1dff420e8f8?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=600&q=80"
+  "https://th.bing.com/th/id/OIP.dUXVgvue3Tl2dv63UC3EaQHaDL?rs=1&pid=ImgDetMain",
+  // "https://images.unsplash.com/photo-1574226516831-e1dff420e8f8?auto=format&fit=crop&w=600&q=80",
+  
+  "https://th.bing.com/th/id/OIP.oSwfgN08ONsQG06xJba-LAHaFj?w=1307&h=979&rs=1&pid=ImgDetMain",
+  "https://th.bing.com/th/id/OIP.0c4W4MOYsqob4FLDhwQaAgHaD4?w=517&h=271&rs=1&pid=ImgDetMain"
 ];
 
 export default function Home() {
@@ -35,7 +38,7 @@ export default function Home() {
       <div className={styles.navbar}>
         <nav>
           <div className={styles.logo}>
-            <h1>Grocery</h1>
+            <img src="./images/logo.jpg" height="60px" alt="" />
           </div>
           {currentUser
             ? <Button name="Logout" onClick={logout} />
