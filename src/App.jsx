@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Home from "./components/Home/Home";
 import './App.css';
-import Cart from './components/cart/Cart';
+import Cart from './components/Cart/Cart';
 import Items from './components/Items/Items';
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
@@ -90,9 +90,14 @@ function AppRoutes() {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
 
+  
   useEffect(() => {
-    if (!currentUser) setShowLogin(true);
-    else setShowLogin(false);
+    if (!currentUser) {
+      const timer = setTimeout(() => setShowLogin(true), 10000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowLogin(false);
+    }
   }, [currentUser]);
 
   return (
@@ -116,6 +121,7 @@ function AppRoutes() {
     </div>
   );
 }
+
 
 export default function App() {
   return (
