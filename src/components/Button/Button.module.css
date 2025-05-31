@@ -1,17 +1,25 @@
 .button {
-    background-color: #f17e36;
-    color: black;
-    border: 2px solid #ed4407;
-    border-radius: 5px;
-    padding: 5px 10px;
+    background-color: #f60b69; /* Light pink background */
+    color:white; /* Dark pink text */
+    border: 1px solid #ff80b3; /* Medium pink border */
+    border-radius: 8px;
+    padding: 7px 10px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    /* box-shadow: 5px 5px 5px 0px rgba(239, 17, 94, 0.9); Soft pink shadow */
 }
-.button:hover{
-    background-color: #ed4407;
+
+.button:hover {
+    background-color: #ffb3d9; /* Brighter pink on hover */
 }
-.button:active{
-    background-color: #ffffff;
-    color: black;
+
+.button:active {
+    background-color: #ff4da6; /* Strong pink on click */
+    color: white;
+}
+
+.button:focus {
+    outline: 2px solid #ff99cc; /* Pink focus ring */
+    outline-offset: 2px;
 }

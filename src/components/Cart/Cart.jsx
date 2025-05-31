@@ -1,3 +1,4 @@
+// src/components/Cart/Cart.jsx
 import React, { useState, useEffect } from "react";
 import styles from "./Cart.module.css";
 import Items from "../Items/Items";
@@ -12,9 +13,7 @@ import {
   query,
   where,
   updateDoc,
-  getDoc,
   setDoc,
-  serverTimestamp,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuth } from "../../context/AuthContext";
@@ -31,7 +30,6 @@ function formatDateTime(date) {
   return d.toLocaleString();
 }
 
-// Profile Tab (floating circle)
 function ProfileTab({ user, onClick }) {
   return (
     <div className={styles.profileCircle} onClick={onClick} title="Profile">
@@ -151,7 +149,7 @@ function ProfileModal({ open, user, onClose, onSave }) {
           style={{
             marginTop: "24px",
             width: "100%",
-            background: "#f17e36",
+            background: "#e91e63",
             color: "#fff",
             border: "none",
             borderRadius: "8px",
@@ -175,6 +173,7 @@ export default function Cart() {
 
   const [baskets, setBaskets] = useState([]);
   const [activeBasket, setActiveBasket] = useState(null);
+  const [editingBasket, setEditingBasket] = useState(null);
   const [showItems, setShowItems] = useState(false);
   const [itemsKey, setItemsKey] = useState(0);
   const [success, setSuccess] = useState("");
@@ -183,14 +182,15 @@ export default function Cart() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
 
-  // Fetch user profile from Firestore
+  // 1) Fetch user profile
   useEffect(() => {
     async function fetchUserProfile() {
       if (!currentUser) return;
       const userRef = doc(db, "users", currentUser.uid);
       const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) setUserProfile(userSnap.data());
-      else {
+      if (userSnap.exists()) {
+        setUserProfile(userSnap.data());
+      } else {
         const userData = {
           uid: currentUser.uid,
           email: currentUser.email,
@@ -205,148 +205,161 @@ export default function Cart() {
     fetchUserProfile();
   }, [currentUser]);
 
-  // Fetch baskets from Firestore
-  useEffect(() => {
-    if (!currentUser) {
-      navigate("/login");
-      return;
-    }
-    (async () => {
-      const q = query(
-        collection(db, "baskets"),
-        where("userId", "==", currentUser.uid)
-      );
-      const snap = await getDocs(q);
-      const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      list.sort(
-        (a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-      );
-      setBaskets(list);
-      if (list.length && !activeBasket) {
-        setActiveBasket(list[0]);
-      }
-    })();
-    // eslint-disable-next-line
-  }, [currentUser]);
-
-  // Keep activeBasket in sync with baskets
-  useEffect(() => {
-    if (!activeBasket && baskets.length) setActiveBasket(baskets[0]);
-    if (activeBasket && !baskets.find((b) => b.id === activeBasket.id)) {
-      setActiveBasket(baskets[0] || null);
-    }
-    // eslint-disable-next-line
-  }, [baskets]);
-
-  // Add new basket and save to Firestore
-  const addNewBasket = async () => {
-    const name = `Basket ${baskets.length + 1}`;
-    const now = new Date();
-    const newBasket = {
-      name,
-      items: [],
-      userId: currentUser.uid,
-      updatedAt: now,
-      createdAt: now,
-    };
-    // Save to Firestore immediately
-    const ref = await addDoc(collection(db, "baskets"), newBasket);
-    const basketWithId = { ...newBasket, id: ref.id };
-    setBaskets((prev) => [basketWithId, ...prev]);
-    setActiveBasket(basketWithId);
-    setShowItems(true);
-    setItemsKey((k) => k + 1);
-    setIsEditing(false);
-    setSuccess("Basket added!");
-    setTimeout(() => setSuccess(""), 2000);
-  };
-
-  // Save or update basket in Firestore
-  const saveOrUpdateBasket = async () => {
-    if (!activeBasket) return;
-    const now = new Date();
-    let id = activeBasket.id;
-    if (id) {
-      await updateDoc(doc(db, "baskets", id), {
-        ...activeBasket,
-        updatedAt: now,
-      });
-      setSuccess("Basket updated!");
-    } else {
-      const ref = await addDoc(collection(db, "baskets"), {
-        ...activeBasket,
-        createdAt: now,
-        updatedAt: now,
-      });
-      id = ref.id;
-      setSuccess("Basket saved!");
-    }
-
-    // Refresh baskets from Firestore
+  // 2) Fetch all baskets
+  const fetchBaskets = async () => {
+    if (!currentUser) return;
     const q = query(
       collection(db, "baskets"),
       where("userId", "==", currentUser.uid)
     );
     const snap = await getDocs(q);
-    const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const list = snap.docs.map((d) => {
+      const data = d.data();
+      return {
+        id: d.id,
+        name: data.name,
+        items: data.items || [],
+        updatedAt: data.updatedAt,
+        createdAt: data.createdAt,
+      };
+    });
     list.sort(
       (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        (b.updatedAt?.toDate?.().getTime() || 0) -
+        (a.updatedAt?.toDate?.().getTime() || 0)
     );
     setBaskets(list);
-    setActiveBasket(list.find((b) => b.id === id));
-    setShowItems(false);
-    setIsEditing(false);
-    setTimeout(() => setSuccess(""), 2000);
+
+    if (
+      list.length &&
+      (!activeBasket || !list.find((b) => b.id === activeBasket.id))
+    ) {
+      setActiveBasket(list[0]);
+      setShowItems(false);
+      setIsEditing(false);
+      setEditingBasket(null);
+    }
+    if (!list.length) {
+      setActiveBasket(null);
+      setShowItems(false);
+      setIsEditing(false);
+      setEditingBasket(null);
+    }
   };
 
-  // Delete basket from Firestore
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+    fetchBaskets();
+    // eslint-disable-next-line
+  }, [currentUser]);
+
+  // 3) Create a new basket
+  const addNewBasket = async () => {
+    if (!currentUser) return;
+    try {
+      const defaultName = `Basket ${baskets.length + 1}`;
+      const now = new Date();
+      const newBasketData = {
+        userId: currentUser.uid,
+        name: defaultName,
+        items: [],
+        createdAt: now,
+        updatedAt: now,
+      };
+      const refDoc = await addDoc(collection(db, "baskets"), newBasketData);
+      const basketWithId = { ...newBasketData, id: refDoc.id };
+
+      setBaskets((prev) => [basketWithId, ...prev]);
+      setActiveBasket(basketWithId);
+      // Enter edit mode immediately
+      setEditingBasket({ ...basketWithId });
+      setIsEditing(true);
+      setShowItems(true);
+      setItemsKey((k) => k + 1);
+      setSuccess("New basket created. Add items and click Save Changes.");
+      setTimeout(() => setSuccess(""), 2000);
+    } catch (err) {
+      console.error("Error creating new basket:", err);
+    }
+  };
+
+  // 4) Save changes to Firestore
+  const saveOrUpdateBasket = async () => {
+    if (!editingBasket) return;
+    try {
+      const now = new Date();
+      const id = editingBasket.id;
+      const basketData = {
+        name: editingBasket.name,
+        items: editingBasket.items,
+        updatedAt: now,
+      };
+      await updateDoc(doc(db, "baskets", id), basketData);
+
+      setSuccess("Basket saved!");
+      setTimeout(() => setSuccess(""), 2000);
+
+      await fetchBaskets();
+      const updated = baskets.find((b) => b.id === id);
+      setActiveBasket(updated || editingBasket);
+      setEditingBasket(null);
+      setIsEditing(false);
+      setShowItems(false);
+    } catch (err) {
+      console.error("Error saving basket:", err);
+    }
+  };
+
+  // 5) Delete a basket
   const removeBasket = async (basketId) => {
-    await deleteDoc(doc(db, "baskets", basketId));
-    const filtered = baskets.filter((b) => b.id !== basketId);
-    setBaskets(filtered);
-    if (activeBasket?.id === basketId) setActiveBasket(filtered[0] || null);
-    setSuccess("Basket deleted!");
-    setTimeout(() => setSuccess(""), 2000);
+    try {
+      await deleteDoc(doc(db, "baskets", basketId));
+      setSuccess("Basket deleted!");
+      setTimeout(() => setSuccess(""), 2000);
+      await fetchBaskets();
+    } catch (err) {
+      console.error("Error deleting basket:", err);
+    }
   };
 
-  // Select basket for viewing/editing
+  // 6) Select a basket (view mode)
   const selectBasket = (b) => {
     setActiveBasket(b);
+    setEditingBasket(null);
+    setIsEditing(false);
     setShowItems(false);
     setItemsKey((k) => k + 1);
-    setIsEditing(false);
   };
 
-  // Update basket items in state and Firestore
-  const updateActive = (fn) => {
-    const copy = { ...activeBasket, items: [...activeBasket.items] };
+  // 7) Local editing helpers
+  const updateEditing = (fn) => {
+    if (!editingBasket) return;
+    const copy = { ...editingBasket, items: [...editingBasket.items] };
     fn(copy);
-    copy.updatedAt = new Date();
-    setActiveBasket(copy);
+    setEditingBasket(copy);
   };
+
   const addItem = (item) =>
-    updateActive((b) => {
+    updateEditing((b) => {
       const idx = b.items.findIndex((x) => x.id === item.id);
       if (idx < 0) b.items.push({ ...item, quantity: 1 });
       else b.items[idx].quantity++;
     });
-  const updateQuantity = (i, delta) =>
-    updateActive((b) => {
-      b.items[i].quantity += delta;
-      if (b.items[i].quantity <= 0) b.items.splice(i, 1);
+
+  const updateQuantity = (itemId, delta) =>
+    updateEditing((b) => {
+      const idx = b.items.findIndex((x) => x.id === itemId);
+      if (idx < 0) return;
+      b.items[idx].quantity += delta;
+      if (b.items[idx].quantity <= 0) {
+        b.items.splice(idx, 1);
+      }
     });
 
-  // Save basket when items are changed and editing is enabled
-  useEffect(() => {
-    if (isEditing && activeBasket?.id) {
-      // Save changes to Firestore when editing
-      saveOrUpdateBasket();
-    }
-    // eslint-disable-next-line
-  }, [activeBasket?.items]);
-
+  // 8) When no active basket exists
   if (!activeBasket) {
     return (
       <div className={styles.responsiveContainer}>
@@ -381,76 +394,109 @@ export default function Cart() {
         }
       />
 
-      <div className="div" style={{ display: "flex", flexDirection: "column" }}>
-        {success && <div className={styles.success}>{success}</div>}
 
-        <div className={styles.basketList}>
-          {baskets.map((b, idx) => (
-            <div
-              key={b.id}
-              className={`${styles.basketTab} ${
-                b.id === activeBasket.id ? styles.activeTab : ""
-              }`}
+      {/* 1) Basket Tabs */}
+      <div className={styles.basketList}>
+      {success && <div className={styles.success}>{success}</div>}
+        {baskets.map((b, idx) => (
+          <div
+            key={b.id}
+            className={`${styles.basketTab} ${
+              b.id === activeBasket.id ? styles.activeTab : ""
+            }`}
+          >
+            <span onClick={() => selectBasket(b)}>
+              {b.name || `Basket ${idx + 1}`}
+            </span>
+            <button
+              className={styles.deleteBtn}
+              onClick={() => removeBasket(b.id)}
             >
-              <span onClick={() => selectBasket(b)}>
-                {b.name || `Basket ${idx + 1}`}
-              </span>
-              <button
-                className={styles.deleteBtn}
-                onClick={() => removeBasket(b.id)}
-              >
-                🗑️
-              </button>
+              🗑️
+            </button>
+            <div style={{cursor:"pointer",fontWeight:"500",marginLeft:"20px"}}
+              
+              onClick={() => {
+                selectBasket(b);
+                setEditingBasket({ ...b });
+                setIsEditing(true);
+                setShowItems(true);
+              }}
+            >
+            
             </div>
-          ))}
-          <button onClick={addNewBasket} className={styles.addBasketbtn}>
-            <span className={styles.addBasketIcon}>➕ Add Basket</span>
-          </button>
-        </div>
+          </div>
+        ))}
+        <button onClick={addNewBasket} className={styles.addBasketbtn}>
+          <span className={styles.addBasketIcon}>➕ Add Basket</span>
+        </button>
       </div>
 
+      {/* 2) Active Basket Card */}
       <div className={styles.card}>
         <h2>{activeBasket.name}</h2>
-        {activeBasket.items.length === 0 ? (
-          <p>No items.</p>
+
+        {(isEditing ? editingBasket?.items : activeBasket.items).length === 0 ? (
+          <p>No items in this basket.</p>
         ) : (
           <ul className={styles.itemList}>
-            {activeBasket.items.map((it, i) => (
-              <li key={i} className={styles.itemRow}>
-                <span>
-                  {it.name} — ₹{it.price} × {it.quantity}
-                </span>
-              </li>
-            ))}
-            <div className={styles.actions}>
-              <Btn
-                name={
-                  activeBasket.id
-                    ? isEditing
-                      ? "Save Changes"
-                      : "Update Basket"
-                    : "Save Basket"
-                }
-                onClick={() =>
-                  activeBasket.id && !isEditing
-                    ? (setIsEditing(true), setShowItems(true))
-                    : saveOrUpdateBasket()
-                }
-              />
-            </div>
+            {(isEditing ? editingBasket.items : activeBasket.items).map(
+              (it, i) => (
+                <li key={i} className={styles.itemRow}>
+                  <span>
+                    {it.name} — ₹{it.price} × {it.quantity}
+                  </span>
+                </li>
+              )
+            )}
           </ul>
         )}
-        <div className={styles.timestamp} style={{ fontSize: "10px" }}>
+
+        <div className={styles.actions}>
+          {isEditing ? (
+            <button
+              className={styles.saveOrUpdateBtn}
+              onClick={saveOrUpdateBasket}
+            >
+              Save Changes
+            </button>
+          ) : (
+            <button
+              className={styles.saveOrUpdateBtn}
+              onClick={() => {
+                setEditingBasket({ ...activeBasket });
+                setIsEditing(true);
+                setShowItems(true);
+              }}
+            >
+              Update Basket
+            </button>
+          )}
+        </div>
+
+        <div style={{fontSize:"10px"}}>
           {activeBasket.updatedAt &&
             `Last updated: ${formatDateTime(activeBasket.updatedAt)}`}
         </div>
       </div>
 
-      {showItems && (
+      {/* 3) Items Component (edit mode only) */}
+      {showItems && isEditing && (
         <Items
           key={itemsKey}
-          onAddItem={addItem}
-          basketItems={activeBasket.items}
+          onAddItem={(itemWithQty) => {
+            const currentQty =
+              editingBasket.items.find((x) => x.id === itemWithQty.id)
+                ?.quantity || 0;
+            const diff = itemWithQty.quantity - currentQty;
+            if (diff > 0) {
+              for (let i = 0; i < diff; i++) addItem(itemWithQty);
+            } else if (diff < 0) {
+              for (let i = 0; i < -diff; i++)
+                updateQuantity(itemWithQty.id, -1);
+            }
+          }}
+          basketItems={editingBasket?.items || []}
         />
       )}
     </div>

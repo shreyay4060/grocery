@@ -1,0 +1,156 @@
+/* AdminDataView.module.css */
+
+/* Full-screen semi‐transparent backdrop */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal container */
+.modal {
+  background: #ffffff;                 /* White background */
+  border-radius: 16px;
+  padding: 32px 24px;
+  min-width: 360px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Close button (×) */
+.closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #fffdfe;       /* Pink color for close icon */
+  cursor: pointer;
+  background-color: #fa2662;
+}
+.closeBtn:hover{
+    color: white;
+}
+
+/* Section wrapping all user cards */
+.section {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+/* Individual user card */
+.userCard {
+  background: lch(95.73% 4.42 351.98);    /* Light pink */
+  border: 2px solid #e91e63;  /* Darker pink border */
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 240px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin: 50px 0px 50px 0px;
+}
+.userCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual basket card nested inside a user card */
+.basketCard {
+  background: #ffffff;       /* White for contrast against userCard */
+  border: 1px solid #e91e63; /* Pink border */
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: background 0.2s;
+}
+.basketCard:hover {
+  background: #fff0f6; /* Very light pink on hover */
+}
+
+/* Headings inside modal */
+h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #333333;
+  text-align: center;
+}
+
+/* Individual user-card text styles */
+.userCard strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #e91e63; /* Pink accent for “User X” label */
+}
+.userCard div {
+  margin-bottom: 4px;
+  color: #444444;
+  font-size: 0.95rem;
+}
+
+/* Basket-card text styles */
+.basketCard strong {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 6px;
+  color: #9c27b0; /* Slightly different pink/purple */
+}
+.basketCard div {
+  margin-bottom: 4px;
+  color: #555555;
+  font-size: 0.9rem;
+}
+
+/* List of items inside basketCard */
+.basketCard ul {
+  list-style-type: disc;
+  padding-left: 18px;
+  margin: 4px 0;
+}
+.basketCard li {
+  font-size: 0.88rem;
+  color: #666666;
+  margin-bottom: 2px;
+}
+
+/* “No baskets” placeholder text */
+.userCard .noBaskets {
+  font-size: 0.9rem;
+  color: #888888;
+  margin-top: 6px;
+}
+
+/* Loading and error messages */
+.loadingMessage,
+.errorMessage {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
+.errorMessage {
+  color: #d32f2f;  /* Red for errors */
+}
+
+/* Fade-in animation for modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

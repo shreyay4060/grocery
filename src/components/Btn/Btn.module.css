@@ -1,5 +1,5 @@
-button{
-    background: #ed6c1c;
+button {
+    background: #e91e63;
     color: #fff;
     border: none;
     border-radius: 20px;
@@ -7,11 +7,17 @@ button{
     font-size: 16px;
     cursor: pointer;
     transition: background 0.2s;
-    &:hover{
-        background: #f84200;
-    }
-    &:active{
-        background: #f06d1b;
-        color: #fff;
-    }
+    display: flex;
+    /* width: 100%; */
+    justify-content: center;
+    align-items: center;
+}
+
+button:hover {
+    background: #eb1a75;
+}
+
+button:active {
+    background: #d81b60;
+    color: #fff;
 }
