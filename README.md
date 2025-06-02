@@ -12,6 +12,11 @@
 - Add items to your basket.
 - Responsive and mobile-friendly UI.
 
+- commands
+- npm i bun
+- bun i
+- bun run dev
+
 ---
 
 # React + Vite
