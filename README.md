@@ -2,6 +2,7 @@
 # Grocery Cart App
 
 ![Screenshot of Grocery Cart App](./screenshot.png)
+![Screenshot of Grocery Cart App](./updateTheme.png)
 
 > Example UI: Basket, type filter cards, and product listing
 
