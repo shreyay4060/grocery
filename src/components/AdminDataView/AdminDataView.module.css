@@ -27,18 +27,21 @@
 
 /* Close button (×) */
 .closeBtn {
-  position: absolute;
+  position: fixed;
   top: 12px;
-  right: 16px;
+  right: 14px;
+  margin-right: 50px;
   background: none;
   border: none;
-  font-size: 1.8rem;
-  color: #fffdfe;       /* Pink color for close icon */
+  font-size: 3rem;
+  color: #ed0f61;       /* Pink color for close icon */
   cursor: pointer;
-  background-color: #fa2662;
+
+  /* background-color: #f85785; */
 }
 .closeBtn:hover{
-    color: white;
+    color: rgb(199, 0, 80);
+    background-color: transparent;
 }
 
 /* Section wrapping all user cards */

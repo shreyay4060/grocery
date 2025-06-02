@@ -5,7 +5,8 @@ import Button from "../Button/Button.jsx";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import AdminDataView from "../AdminDataView/AdminDataView";
-
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 // ─── 1. Fill this array with your actual image URLs/paths ───
 // If you put images in public/images/, you can reference them as "/images/slideX.jpg"
 const carouselImages = [

@@ -72,7 +72,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Profile Tab (floating) */
+/* Profile Tab (Floating on top right) */
 .profileTab {
   position: fixed;
   top: 16px;
@@ -105,7 +105,7 @@
   color: #555;
 }
 
-/* Profile Circle (icon) */
+/* Profile Circle (Icon) */
 .profileCircle {
   position: fixed;
   top: 18px;
@@ -127,7 +127,7 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Large Profile Picture */
+/* Large Profile Picture (Modal) */
 .profilePicLarge {
   width: 80px;
   height: 80px;
@@ -150,7 +150,7 @@
 
 /* Profile Modal Window */
 .profileModal {
-  background: #ffffff; /* White */
+  background: #ffffff;
   border-radius: 16px;
   padding: 32px 24px 24px 24px;
   min-width: 320px;
@@ -280,7 +280,7 @@
 
 /* Individual Basket Tab */
 .basketTab {
-  background: #ffffff; /* White */
+  background: #ffffff;
   border-radius: 8px;
   padding: 8px 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -347,7 +347,7 @@
   }
 }
 
-/* Actions Section (e.g., Save/Update) */
+/* Actions Section (e.g., Save/Update buttons) */
 .actions {
   margin: 16px 0;
   display: flex;

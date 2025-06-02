@@ -1,76 +1,89 @@
-import React, { useState, useEffect, useRef } from 'react';
+// src/components/Items/Items.jsx
+
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./Items.module.css";
 import data from "../../data.js";
+import i18n from "i18next";
+import { useTranslation } from "react-i18next";
 
 const getAllTypes = (dataArr) => {
   const types = new Set();
-  dataArr.forEach(item => item.type && types.add(item.type));
+  dataArr.forEach((item) => {
+    if (item.type) types.add(item.type);
+  });
   return Array.from(types);
 };
 
 export default function Items({ onAddItem, basketItems = [] }) {
+  const { t } = useTranslation();
+
+  // All raw types (e.g. "biscuits", "chocolate", etc.)
+  const rawTypes = getAllTypes(data);
+  // Include "all" at the front
+  const allTypes = ["all", ...rawTypes];
+
   const [filteredItem, setFilteredItem] = useState(data);
-  const [visibleRows, setVisibleRows] = useState(3);
+  const [visibleRows, setVisibleRows] = useState(4);
   const [quantities, setQuantities] = useState({});
   const [activeType, setActiveType] = useState("all");
+  const [language, setLanguage] = useState(i18n.language || "en");
+
   const itemsPerRow = 3;
   const loaderRef = useRef();
-  const allTypes = ["all", ...getAllTypes(data)];
 
-  // Initialize quantities from basketItems—but do NOT reset filteredItem here,
-  // so filtering remains in place when the user clicks "Add".
+  // When basketItems changes, sync quantities
   useEffect(() => {
     const initialQuantities = {};
-    basketItems.forEach(item => {
+    basketItems.forEach((item) => {
       initialQuantities[item.id] = item.quantity;
     });
     setQuantities(initialQuantities);
   }, [basketItems]);
 
-  // Infinite scroll
+  // Infinite scroll effect
   useEffect(() => {
     function handleScroll() {
       if (
         loaderRef.current &&
         window.innerHeight + window.scrollY >= loaderRef.current.offsetTop
       ) {
-        setVisibleRows(prev => prev + 1);
+        setVisibleRows((prev) => prev + 1);
       }
     }
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Filter items by type (called only when user clicks a type button)
+  // Filter items by type
   function handleTypeClick(type) {
     setActiveType(type);
     setVisibleRows(3);
     if (type === "all") {
       setFilteredItem(data);
     } else {
-      setFilteredItem(data.filter(item => item.type === type));
+      setFilteredItem(data.filter((item) => item.type === type));
     }
   }
 
-  // Search within the current filter (type)
+  // Search within current filter
   function searchItem(event) {
-    const searchValue = event.target.value.trim();
+    const searchValue = event.target.value.trim().toLowerCase();
     if (searchValue === "") {
       handleTypeClick(activeType);
       return;
     }
-    const filter = data.filter(item => {
+    const filtered = data.filter((item) => {
       return (
         (activeType === "all" || item.type === activeType) &&
-        item.name.toLowerCase().includes(searchValue.toLowerCase())
+        item.name.toLowerCase().includes(searchValue)
       );
     });
-    setFilteredItem(filter);
+    setFilteredItem(filtered);
   }
 
-  // Change quantity locally and notify parent, without altering filteredItem
+  // Add or remove quantity
   function handleQuantityChange(item, delta) {
-    setQuantities(prev => {
+    setQuantities((prev) => {
       const current = prev[item.id] || 0;
       const updated = current + delta;
 
@@ -86,73 +99,144 @@ export default function Items({ onAddItem, basketItems = [] }) {
     });
   }
 
+  // Compute visible items based on infinite scroll
   const visibleItems = filteredItem.slice(0, visibleRows * itemsPerRow);
+
+  // Change language handler
+  const handleLanguageChange = (e) => {
+    const lang = e.target.value;
+    i18n.changeLanguage(lang);
+    setLanguage(lang);
+  };
 
   return (
     <div>
-      {/* Type filter buttons */}
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", margin: "10px 0 -50px 20px" }}>
-        {allTypes.map(type => (
-          <button
-            key={type}
-            className={activeType === type ? styles.addBtn : ""}
-            style={{
-              border: "1px solid #e91e63",
-              background: activeType === type ? "#e91e63" : "#fff",
-              color: activeType === type ? "#fff" : "#e91e63",
-              borderRadius: 16,
-              padding: "6px 10px",
-              marginBottom: 8,
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: 15
-            }}
-            onClick={() => handleTypeClick(type)}
-          >
-            {type.charAt(0).toUpperCase() + type.slice(1)}
-          </button>
-        ))}
+      <br /><br />
+      {/* ─────────────────────────────────────────────────────────────
+          LANGUAGE SELECTOR: changes i18n.language, re-renders all t(...)
+      ───────────────────────────────────────────────────────────── */}
+      {/* <div
+        style={{
+          textAlign: "right",
+          margin: "10px 20px",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <label
+          htmlFor="lang-select"
+          style={{ marginRight: "8px", fontWeight: 500 }}
+        >
+          {t("Language")}:
+        </label>
+        <select
+          id="lang-select"
+          value={language}
+          onChange={handleLanguageChange}
+          style={{
+            padding: "6px 12px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            fontSize: "15px",
+            minWidth: 120,
+            background: "#fff",
+            fontWeight: 500,
+          }}
+        >
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="mr">मराठी</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="es">Español</option>
+        </select>
+      </div> */}
+
+      {/* ─────────────────────────────────────────────────────────────
+          TYPE FILTER BUTTONS: raw `type` is capitalized and passed to t(...)
+      ───────────────────────────────────────────────────────────── */}
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+          flexWrap: "wrap",
+          margin: "10px 0 -50px 20px",
+        }}
+      >
+        {allTypes.map((type) => {
+          // Derive a translation key for the button label
+          const labelKey =
+            type === "all" ? "All" : type.charAt(0).toUpperCase() + type.slice(1);
+          return (
+            <button
+              key={type}
+              className={activeType === type ? styles.addBtn : ""}
+              style={{
+                border: "1px solid #e91e63",
+                background: activeType === type ? "#e91e63" : "#fff",
+                color: activeType === type ? "#fff" : "#e91e63",
+                borderRadius: 5,
+                padding: "6px 15px",
+                marginBottom: 8,
+                cursor: "pointer",
+                fontWeight: 600,
+                fontSize: 15,
+                // marginLeft:30,
+                margin:"auto"
+              }}
+              onClick={() => handleTypeClick(type)}
+            >
+              {t(labelKey)}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Search bar */}
+      {/* SEARCH BAR */}
       <div className={styles.search}>
-        <input 
-          type="search" 
-          name="search" 
-          placeholder="🔍 Search here..." 
-          onChange={searchItem} 
+        <input
+          type="search"
+          name="search"
+          placeholder={t("🔍 Search here...")}
+          onChange={searchItem}
         />
       </div>
 
-      {/* Items grid */}
+      {/* ITEMS GRID */}
       <div className={styles.items}>
-        {visibleItems.map(item => {
+        {visibleItems.map((item) => {
           const quantity = quantities[item.id] || 0;
           return (
             <div className={styles.item} key={item.id}>
               <div className={styles.img}>
-                <img src={item.image} alt={item.name} />
+                <img src={item.image} alt={item.name} height="60px" />
               </div>
               <div className={styles.info}>
-                <h3>{item.name}</h3>
-                <p>Price: ₹{item.price}</p>
+                <h3>{t(`products.${item.id}`)}</h3>
+                <p>₹ {item.price}</p>
                 {quantity === 0 ? (
-                  <button 
-                    className={styles.addBtn} 
+                  <button
+                    className={styles.addBtn}
                     onClick={() => handleQuantityChange(item, 1)}
                   >
-                    Add
+                    {t("Add")}
                   </button>
                 ) : (
                   <div className={styles.qtyControl}>
-                    <button 
-                      style={{ padding: "3px 3px", display: "flex", alignItems: "center" }} 
+                    <button
+                      style={{
+                        padding: "3px 3px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
                       onClick={() => handleQuantityChange(item, -1)}
                     >
                       –
                     </button>
                     <span>{quantity}</span>
-                    <button onClick={() => handleQuantityChange(item, 1)}>+</button>
+                    <button onClick={() => handleQuantityChange(item, 1)}>
+                      +
+                    </button>
                   </div>
                 )}
               </div>
@@ -161,7 +245,7 @@ export default function Items({ onAddItem, basketItems = [] }) {
         })}
       </div>
 
-      {/* Loader for infinite scroll */}
+      {/* LOADER FOR INFINITE SCROLL */}
       {visibleItems.length < filteredItem.length && (
         <div className={styles.loader}>
           <div className={styles.spinner}></div>

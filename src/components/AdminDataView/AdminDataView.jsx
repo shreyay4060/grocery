@@ -6,7 +6,12 @@ import {
 } from "firebase/firestore";
 import styles from "./AdminDataView.module.css";
 
+import { useTranslation } from "react-i18next";
+
 export default function AdminDataView({ onClose }) {
+
+     const { t } = useTranslation();
+
   const [users, setUsers] = useState([]);
   const [baskets, setBaskets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,31 +50,31 @@ export default function AdminDataView({ onClose }) {
     return user ? user.email : "";
   }
 
-  return (
+ return (
     <div className={styles.backdrop}>
       <div className={styles.modal}>
         <button className={styles.closeBtn} onClick={onClose}>×</button>
-        <h2>All Users & Their Baskets</h2>
-        {loading && <div>Loading...</div>}
+        <h2>{t("All Users & Their Baskets")}</h2>
+        {loading && <div>{t("Loading...")}</div>}
         {err && <div style={{ color: "red" }}>{err}</div>}
         <div className={styles.section}>
           {users.map((user, idx) => (
             <div key={user.id} className={styles.userCard}>
-              <strong>User {idx + 1}</strong>
-              <div>Name: {user.displayName || user.email}</div>
-              <div>Email: {user.email}</div>
-              <div>UID: {user.uid}</div>
-              <div>Birthdate: {user.birthdate || "-"}</div>
-              <div style={{ marginTop: 8, fontWeight: "bold" }}>Baskets:</div>
+              <strong>{t("User")} {idx + 1}</strong>
+              <div>{t("Name:")} {user.displayName || user.email}</div>
+              <div>{t("Email:")} {user.email}</div>
+              <div>{t("UID:")} {user.uid}</div>
+              <div>{t("Birthdate:")} {user.birthdate || "-"}</div>
+              <div style={{ marginTop: 8, fontWeight: "bold" }}>{t("Baskets:")}</div>
               {getUserBaskets(user.id).length === 0 && (
-                <div style={{ color: "#888" }}>No baskets.</div>
+                <div style={{ color: "#888" }}>{t("No baskets.")}</div>
               )}
               {getUserBaskets(user.id).map((basket, bidx) => (
                 <div key={basket.id} className={styles.basketCard} style={{ marginTop: 8 }}>
                   <strong>{basket.name}</strong>
-                  <div>Basket ID: {basket.id}</div>
-                  <div>User Email: {getUserEmail(basket.userId)}</div>
-                  <div>Items:</div>
+                  <div>{t("Basket ID:")} {basket.id}</div>
+                  <div>{t("User Email:")} {getUserEmail(basket.userId)}</div>
+                  <div>{t("Items:")}</div>
                   <ul>
                     {(basket.items || []).map((item, i) => (
                       <li key={i}>

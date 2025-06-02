@@ -48,10 +48,10 @@ export default function Login({ onSignup }) {
           <div className="btn">
             <button onClick={handleClick} type="submit" className="button">Login</button>
           </div>
-        </form><br /><br />
+        </form>
         <p>
           Don't have an account?{" "}
-          <span style={{ color: "#e15e0c", cursor: "pointer", fontWeight:"600" }} onClick={onSignup}>Sign up</span>
+          <span style={{ color: "#f17e36", cursor: "pointer" }} onClick={onSignup}>Sign up</span>
         </p>
       </div>
     </div>
