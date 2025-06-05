@@ -122,11 +122,7 @@ function ProfileModal({ open, user, onClose, onSave }) {
               onChange={handleChange}
             />
           </div>
-          <button
-            className={styles.saveBtn}
-            type="submit"
-            disabled={uploading}
-          >
+          <button className={styles.saveBtn} type="submit" disabled={uploading}>
             {t("Save")}
           </button>
         </form>
@@ -207,14 +203,7 @@ export default function Cart() {
     fetchUserProfile();
   }, [currentUser]);
 
-  // ───────────────────────────────────────────────────────────────
-  // fetchBaskets now returns the array it built. It also updates:
-  //  1) baskets state,
-  //  2) activeBasket (replacing it if it still exists, or picking first, or null),
-  //  3) clears editing/showItems when needed.
-  // We call this on mount, on language‐change (because t changes), and after any add/delete.
-  // ───────────────────────────────────────────────────────────────
-  const fetchBaskets = async () => {
+   const fetchBaskets = async () => {
     if (!currentUser) return [];
     try {
       const q = query(
@@ -237,14 +226,14 @@ export default function Cart() {
         }
 
         return {
-          id:          d.id,
-          rawName:     data.name || "",       // old‐schema fallback
-          nameKey:     data.nameKey || null,  // e.g. "Basket"
-          number:      data.number || null,   // e.g. 1, 2, 3...
-          displayName,                         // e.g. "Basket 1" in current locale
-          items:       data.items || [],
-          updatedAt:   data.updatedAt,
-          createdAt:   data.createdAt,
+          id: d.id,
+          rawName: data.name || "", // old‐schema fallback
+          nameKey: data.nameKey || null, // e.g. "Basket"
+          number: data.number || null, // e.g. 1, 2, 3...
+          displayName, // e.g. "Basket 1" in current locale
+          items: data.items || [],
+          updatedAt: data.updatedAt,
+          createdAt: data.createdAt,
         };
       });
 
@@ -320,10 +309,10 @@ export default function Cart() {
 
       const now = new Date();
       const newBasketData = {
-        userId:    currentUser.uid,
-        nameKey:   "Basket",
-        number:    nextNumber,
-        items:     [],
+        userId: currentUser.uid,
+        nameKey: "Basket",
+        number: nextNumber,
+        items: [],
         createdAt: now,
         updatedAt: now,
       };
@@ -332,14 +321,14 @@ export default function Cart() {
 
       // Build the object we’ll immediately push into state
       const basketWithId = {
-        id:          refDoc.id,
-        rawName:     "",
-        nameKey:     "Basket",
-        number:      nextNumber,
+        id: refDoc.id,
+        rawName: "",
+        nameKey: "Basket",
+        number: nextNumber,
         displayName: `${t("Basket")} ${nextNumber}`,
-        items:       [],
-        createdAt:   now,
-        updatedAt:   now,
+        items: [],
+        createdAt: now,
+        updatedAt: now,
       };
 
       setBaskets((prev) => [basketWithId, ...prev]);
@@ -364,7 +353,7 @@ export default function Cart() {
 
       // We only store: items + updatedAt
       await updateDoc(doc(db, "baskets", id), {
-        items:     editingBasket.items,
+        items: editingBasket.items,
         updatedAt: now,
       });
 
@@ -438,7 +427,8 @@ export default function Cart() {
     return (
       <div className={styles.responsiveContainer}>
         {/* Language Selector */}
-        <div className="language"
+        <div
+          className="language"
           style={{
             margin: "10px 0",
             textAlign: "right",
@@ -447,38 +437,36 @@ export default function Cart() {
           }}
         >
           <div className="div">
-
-          
-          <label
-            htmlFor="lang-select"
-            style={{ marginRight: 8, fontWeight: 500 }}
-          >
-            🌐
-          </label>
-          <select
-            id="lang-select"
-            value={language}
-            onChange={handleLanguageChange}
-            style={{
-              padding: "6px 12px",
-              borderRadius: "6px",
-              border: "1px solid #ccc",
-              fontSize: "15px",
-              minWidth: 120,
-              background: "#fff",
-              fontWeight: 500,
-            }}
-          >
-            <option value="en">English</option>
-            <option value="hi">हिन्दी</option>
-            <option value="mr">मराठी</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="es">Español</option>
-            <option value="gu">Gujarati</option>
-            <option value="rj">Rejasthani</option>
-          </select>
-        </div>
+            <label
+              htmlFor="lang-select"
+              style={{ marginRight: 8, fontWeight: 500 }}
+            >
+              🌐
+            </label>
+            <select
+              id="lang-select"
+              value={language}
+              onChange={handleLanguageChange}
+              style={{
+                padding: "6px 12px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+                fontSize: "15px",
+                minWidth: 120,
+                background: "#fff",
+                fontWeight: 500,
+              }}
+            >
+              <option value="en">English</option>
+              <option value="hi">हिन्दी</option>
+              <option value="mr">मराठी</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="es">Español</option>
+              <option value="gu">Gujarati</option>
+              <option value="rj">Rajasthani</option>
+            </select>
+          </div>
         </div>
 
         <ProfileTab user={userProfile} onClick={() => setProfileOpen(true)} />
@@ -514,10 +502,12 @@ export default function Cart() {
           style={{ padding: "4px" }}
         >
           <option value="en">English</option>
-          <option value="fr">Français</option>
-          <option value="de">Deutsch</option>
           <option value="hi">हिन्दी</option>
           <option value="mr">मराठी</option>
+          <option value="gu">Gujarati</option>
+          <option value="rj">Rajasthani</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
           <option value="es">Español</option>
         </select>
       </div>
@@ -574,28 +564,25 @@ export default function Cart() {
             : activeBasket.rawName}
         </h2>
 
-        {(
-          (!isEditing &&
-            Array.isArray(activeBasket.items) &&
-            activeBasket.items.length === 0) ||
-          (isEditing &&
-            Array.isArray(editingBasket?.items) &&
-            editingBasket.items.length === 0)
-        ) ? (
+        {(!isEditing &&
+          Array.isArray(activeBasket.items) &&
+          activeBasket.items.length === 0) ||
+        (isEditing &&
+          Array.isArray(editingBasket?.items) &&
+          editingBasket.items.length === 0) ? (
           <p>{t("No items in this basket.")}</p>
         ) : (
           <ul className={styles.itemList}>
-            {(isEditing
-              ? editingBasket.items
-              : activeBasket.items
-            ).map((it, i) => (
-              <li key={i} className={styles.itemRow}>
-                <span>
-                  {/* Now translating item names by their ID key */}
-                  {t(`products.${it.id}`)} — ₹{it.price} × {it.quantity}
-                </span>
-              </li>
-            ))}
+            {(isEditing ? editingBasket.items : activeBasket.items).map(
+              (it, i) => (
+                <li key={i} className={styles.itemRow}>
+                  <span>
+                    {/* Now translating item names by their ID key */}
+                    {t(`products.${it.id}`)} — ₹{it.price} × {it.quantity}
+                  </span>
+                </li>
+              )
+            )}
             <div className={styles.actions}>
               <Btn
                 name={
@@ -619,11 +606,11 @@ export default function Cart() {
 
         <div className={styles.timestamp} style={{ fontSize: "8px" }}>
           {activeBasket.updatedAt &&
-            ` ${formatDateTime(
-              activeBasket.updatedAt
-            )}`}
+            ` ${formatDateTime(activeBasket.updatedAt)}`}
         </div>
       </div>
+      <br />
+     
 
       {/* 5) ITEMS PALETTE (ONLY VISIBLE WHEN isEditing=true) */}
       {showItems && (
