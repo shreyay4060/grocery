@@ -31,7 +31,7 @@ export const db = getFirestore(app);
 
 // ✅ Connect to emulators only in development
 if (import.meta.env.DEV) {
-  connectFirestoreEmulator(db, '127.0.0.1', 8085); 
+  connectFirestoreEmulator(db, '127.0.0.1', 8081); 
   connectAuthEmulator(auth, 'http://127.0.0.1:9099');
   console.log('⚡️ Connected to Firestore and Auth emulators');
 }

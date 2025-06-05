@@ -253,13 +253,51 @@
     align-items: stretch;
     gap: 16px;
     padding: 16px 4px;
+    margin-top: 50px;
+    
+    
   }
+  .basketList span{
+    font-size: small;
+  }
+  .basketList .deleteBtn{
+    font-size: small;
+    
+  }
+  .basketTab{
+    width: 150px;
+  }
+  .addBasketbtn{
+    /* width: -100px; */
+  min-width: 100px;
+  max-width: 140px;
+  /* padding: 2px -12px; */
+  }
+  .card h2{
+    font-size: medium;
+    margin-bottom: 20px;
+  }
+  .addBasketbtn span{
+    max-width: 100px;
+    font-size: small;
+    padding: -20px -20px;
+  }
+  
+  .saveBtn{
+    font-size:x-small;
+    padding: -4px -5px;
+  }
+
   .card {
     margin: 12px auto;
-    width: 98vw;
-    max-width: 98vw;
-    min-width: 0;
+    /* width: 98vw; */
+    max-width: 38vw;
+    min-width: 70vw;
     padding: 12px;
+    font-size:x-small;
+  }
+  .div{
+    margin-right: 100px;
   }
   .basketList {
     width: 100%;

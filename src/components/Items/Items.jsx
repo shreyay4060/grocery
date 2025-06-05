@@ -112,56 +112,8 @@ export default function Items({ onAddItem, basketItems = [] }) {
   return (
     <div>
       <br /><br />
-      {/* ─────────────────────────────────────────────────────────────
-          LANGUAGE SELECTOR: changes i18n.language, re-renders all t(...)
-      ───────────────────────────────────────────────────────────── */}
-      {/* <div
-        style={{
-          textAlign: "right",
-          margin: "10px 20px",
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-        <label
-          htmlFor="lang-select"
-          style={{ marginRight: "8px", fontWeight: 500 }}
-        >
-          {t("Language")}:
-        </label>
-        <select
-          id="lang-select"
-          value={language}
-          onChange={handleLanguageChange}
-          style={{
-            padding: "6px 12px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-            fontSize: "15px",
-            minWidth: 120,
-            background: "#fff",
-            fontWeight: 500,
-          }}
-        >
-          <option value="en">English</option>
-          <option value="hi">हिन्दी</option>
-          <option value="mr">मराठी</option>
-          <option value="fr">Français</option>
-          <option value="de">Deutsch</option>
-          <option value="es">Español</option>
-        </select>
-      </div> */}
-
-      {/* ─────────────────────────────────────────────────────────────
-          TYPE FILTER BUTTONS: raw `type` is capitalized and passed to t(...)
-      ───────────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          flexWrap: "wrap",
-          margin: "10px 0 -50px 20px",
-        }}
+      <div className={styles.type}
+       
       >
         {allTypes.map((type) => {
           // Derive a translation key for the button label

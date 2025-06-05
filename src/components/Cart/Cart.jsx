@@ -438,7 +438,7 @@ export default function Cart() {
     return (
       <div className={styles.responsiveContainer}>
         {/* Language Selector */}
-        <div
+        <div className="language"
           style={{
             margin: "10px 0",
             textAlign: "right",
@@ -446,6 +446,9 @@ export default function Cart() {
             justifyContent: "flex-end",
           }}
         >
+          <div className="div">
+
+          
           <label
             htmlFor="lang-select"
             style={{ marginRight: 8, fontWeight: 500 }}
@@ -472,7 +475,10 @@ export default function Cart() {
             <option value="fr">Français</option>
             <option value="de">Deutsch</option>
             <option value="es">Español</option>
+            <option value="gu">Gujarati</option>
+            <option value="rj">Rejasthani</option>
           </select>
+        </div>
         </div>
 
         <ProfileTab user={userProfile} onClick={() => setProfileOpen(true)} />
